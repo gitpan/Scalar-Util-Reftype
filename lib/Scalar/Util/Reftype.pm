@@ -1,22 +1,23 @@
 package Scalar::Util::Reftype;
 use strict;
 use vars qw( $VERSION @ISA $OID @EXPORT @EXPORT_OK );
-use constant LIST_PRIMITIVE => qw( SCALAR ARRAY HASH CODE GLOB REF IO REGEXP );
+use constant PRIMITIVES => qw(  Regexp IO SCALAR ARRAY HASH CODE GLOB REF );
 use subs qw( container class reftype type blessed object );
 use overload bool     => '_bool',
              fallback => 1,
             ;
+use re           ();
 use Scalar::Util ();
 use Exporter     ();
 
-$VERSION = '0.20';
+$VERSION = '0.21';
 @ISA       = qw( Exporter );
 @EXPORT    = qw( reftype  );
 @EXPORT_OK = qw( type     );
 
 BEGIN {
     $OID = -1;
-    foreach my $type ( LIST_PRIMITIVE ) {
+    foreach my $type ( PRIMITIVES ) {
         constant->import( 'TYPE_' . $type,             ++$OID );
         constant->import( 'TYPE_' . $type . '_OBJECT', ++$OID );
     }
@@ -24,6 +25,7 @@ BEGIN {
 
 use constant CONTAINER => ++$OID;
 use constant BLESSED   => ++$OID;
+use constant OVERRIDE  => ++$OID;
 use constant MAXID     =>   $OID;
 
 BEGIN {
@@ -40,6 +42,12 @@ BEGIN {
             return $self->[ $self->$id ];
         }
     }
+
+    # http://www.perlmonks.org/index.pl?node_id=665429
+    *re::is_regexp = sub($) {
+        local *__ANON__ = 'is_regexp';
+        return UNIVERSAL::isa( $_[0], ref qr// );
+    } if ! defined &re::is_regexp;
 }
 
 sub reftype { __PACKAGE__->new->analyze( @_ ) }
@@ -57,13 +65,16 @@ sub analyze {
     my $thing = shift || return $self;
     my $ref   = CORE::ref($thing) || return $self;
     my($id, $type);
-    foreach $type ( LIST_PRIMITIVE ) {
+
+    foreach $type ( PRIMITIVES ) {
         $id = $ref eq $type                 ? sprintf( 'TYPE_%s',        $type )
             : $self->_object($thing, $type) ? sprintf( 'TYPE_%s_OBJECT', $type )
             :                                 undef
             ;
         if ( $id ) {
-            $self->[ $self->$id() ] = 1;
+            $self->[ $self->$id() ] = 1 if ! $self->[OVERRIDE];
+            # IO refs are always objects
+            $self->[TYPE_IO]        = 1 if $id eq 'TYPE_IO_OBJECT';
             $self->[CONTAINER]      = $ref if $self->[BLESSED];
             last;
         }
@@ -76,9 +87,21 @@ sub blessed   { shift->[BLESSED]   }
 
 sub _object {
     my($self, $object, $type)= @_;
-    return if not Scalar::Util::blessed($object);
-    return if Scalar::Util::reftype($object) ne $type;
+    my $blessed = Scalar::Util::blessed($object) || return;
+    my $rt      = Scalar::Util::reftype($object);
     $self->[BLESSED] = 1;
+    if ( $rt eq 'IO' ) { # special case: IO
+        $self->[TYPE_IO_OBJECT] = 1;
+        $self->[TYPE_IO]        = 1;
+        $self->[OVERRIDE]       = 1;
+        return 1;
+    }
+    if ( re::is_regexp( $object ) ) { # special case: Regexp
+        $self->[TYPE_Regexp_OBJECT] = 1;
+        $self->[OVERRIDE]           = 1;
+        return 1;
+    }
+    return if $rt ne $type; #  || ! ( $blessed eq 'IO' && $blessed eq $type );
     return 1;
 }
 
@@ -118,8 +141,8 @@ Scalar::Util::Reftype - Alternate reftype() interface
 
 =head1 DESCRIPTION
 
-This document describes version C<0.20> of C<Scalar::Util::Reftype>
-released on C<17 August 2009>.
+This document describes version C<0.21> of C<Scalar::Util::Reftype>
+released on C<18 August 2009>.
 
 This is an alternate interface to C<Scalar::Util>'s C<reftype> function.
 Instead of manual type checking you can just call methods on the result
