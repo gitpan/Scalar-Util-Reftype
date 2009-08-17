@@ -3,10 +3,13 @@ use strict;
 use vars qw( $VERSION @ISA $OID @EXPORT @EXPORT_OK );
 use constant LIST_PRIMITIVE => qw( SCALAR ARRAY HASH CODE GLOB REF IO REGEXP );
 use subs qw( container class reftype type blessed object );
+use overload bool     => '_bool',
+             fallback => 1,
+            ;
 use Scalar::Util ();
 use Exporter     ();
 
-$VERSION = '0.10';
+$VERSION = '0.20';
 @ISA       = qw( Exporter );
 @EXPORT    = qw( reftype  );
 @EXPORT_OK = qw( type     );
@@ -79,6 +82,15 @@ sub _object {
     return 1;
 }
 
+sub _bool {
+    require Carp;
+    Carp::croak(
+         "reftype() objects can not be used in boolean contexts. "
+        ."Please call one of the test methods on the return value instead. "
+        ."Example: `print 42 if reftype( \$thing )->array;`"
+    );
+}
+
 1;
 
 __END__
@@ -106,7 +118,7 @@ Scalar::Util::Reftype - Alternate reftype() interface
 
 =head1 DESCRIPTION
 
-This document describes version C<0.10> of C<Scalar::Util::Reftype>
+This document describes version C<0.20> of C<Scalar::Util::Reftype>
 released on C<17 August 2009>.
 
 This is an alternate interface to C<Scalar::Util>'s C<reftype> function.

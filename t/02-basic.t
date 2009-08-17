@@ -42,3 +42,11 @@ is( reftype(undef)->array, 0, 'Test non-ref (undef)' );
 is( reftype(0    )->array, 0, 'Test non-ref (zero)' );
 
 is( reftype('foobar')->array, 0, 'Test non-ref' );
+
+eval {
+    print 42 if reftype( 'secrets of the universe' );
+};
+
+ok( $@, "Error thrown");
+like( $@, qr{can not be used in boolean contexts}ms,
+    'Objects can not be used in boolean contexts' );
