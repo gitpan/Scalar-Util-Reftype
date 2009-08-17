@@ -1,0 +1,29 @@
+---
+name: Scalar-Util-Reftype
+version: 0.10
+author:
+  - 'Burak Gursoy <burak@cpan.org>'
+abstract: Alternate reftype() interface
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+  repository: http://bitbucket.org/burak/cpan-scalar-util-reftype/
+build_requires:
+  Test::More: 0.40
+requires:
+  Scalar::Util: 0
+configure_requires:
+  Module::Build: 0.340201
+provides:
+  Scalar::Util::Reftype:
+    file: lib/Scalar/Util/Reftype.pm
+    version: 0.10
+no_index:
+  directory:
+    - monolithic_version
+    - builder
+    - t
+generated_by: Module::Build version 0.340201
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
