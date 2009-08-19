@@ -1,6 +1,6 @@
 ---
 name: Scalar-Util-Reftype
-version: 0.21
+version: 0.30
 author:
   - 'Burak Gursoy <burak@cpan.org>'
 abstract: Alternate reftype() interface
@@ -17,7 +17,7 @@ configure_requires:
 provides:
   Scalar::Util::Reftype:
     file: lib/Scalar/Util/Reftype.pm
-    version: 0.21
+    version: 0.30
 no_index:
   directory:
     - monolithic_version
