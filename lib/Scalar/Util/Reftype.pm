@@ -10,7 +10,7 @@ use re           ();
 use Scalar::Util ();
 use Exporter     ();
 
-$VERSION = '0.30';
+$VERSION = '0.31';
 @ISA       = qw( Exporter );
 @EXPORT    = qw( reftype  );
 @EXPORT_OK = qw( type     );
@@ -143,8 +143,8 @@ Scalar::Util::Reftype - Alternate reftype() interface
 
 =head1 DESCRIPTION
 
-This document describes version C<0.30> of C<Scalar::Util::Reftype>
-released on C<19 August 2009>.
+This document describes version C<0.31> of C<Scalar::Util::Reftype>
+released on C<3 September 2009>.
 
 This is an alternate interface to C<Scalar::Util>'s C<reftype> function.
 Instead of manual type checking you can just call methods on the result
@@ -162,35 +162,73 @@ or one (true) based on the C<EXPR> you have specified.
 
 =head3 scalar
 
+Tests if C<EXPR> is a SCALAR reference or not.
+
 =head3 array
+
+Tests if C<EXPR> is an ARRAY reference or not.
 
 =head3 hash
 
+Tests if C<EXPR> is a HASH reference or not.
+
 =head3 code
+
+Tests if C<EXPR> is a CODE reference or not.
 
 =head3 glob
 
+Tests if C<EXPR> is a GLOB reference or not.
+
 =head3 ref
+
+Tests if C<EXPR> is a reference to a reference or not.
 
 =head3 io
 
+Tests if C<EXPR> is a IO reference or not.
+
+B<CAVEAT>: C<< reftype(EXPR)->io_object >> is also true since there is no way to
+distinguish them (i.e.: IO refs are already implemented as objects).
+
 =head3 regexp
+
+Tests if C<EXPR> is a Regexp reference or not.
 
 =head3 scalar_object
 
+Tests if C<EXPR> is a SCALAR reference based object or not.
+
 =head3 array_object
+
+Tests if C<EXPR> is an ARRAY reference based object or not.
 
 =head3 hash_object
 
+Tests if C<EXPR> is a HASH reference based object or not.
+
 =head3 code_object
+
+Tests if C<EXPR> is a CODE reference based object or not.
 
 =head3 glob_object
 
+Tests if C<EXPR> is a GLOB reference based object or not.
+
 =head3 ref_object
+
+Tests if C<EXPR> is a reference to a reference based object or not.
 
 =head3 io_object
 
+Tests if C<EXPR> is a IO reference based object or not.
+
+B<CAVEAT>: C<< reftype(EXPR)->io >> is also true since there is no way to
+distinguish them (i.e.: IO refs are already implemented as objects).
+
 =head3 regexp_object
+
+Tests if C<EXPR> is a Regexp reference based object or not.
 
 =head3 class
 
@@ -217,9 +255,27 @@ automated tool --like cpan shell-- will install it automatically)
 C<Data::Dump::Streamer> which provides the C<regex> function similar to
 C<re::is_regexp>.
 
+IO refs are already implemented as objects, so both C<< reftype(EXPR)->io >>
+and C<< reftype(EXPR)->io_object >> will return true is C<EXPR> is either
+and IO reference or an IO reference based object.
+
 =head1 SEE ALSO
 
 L<Scalar::Util>, L<Data::Dump::Streamer>, L<re>,
 L<http://perlmonks.org/?node_id=665339>.
+
+=head1 AUTHOR
+
+Burak Gursoy <burak@cpan.org>.
+
+=head1 COPYRIGHT
+
+Copyright 2009 Burak Gursoy. All rights reserved.
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify 
+it under the same terms as Perl itself, either Perl version 5.10.0 or, 
+at your option, any later version of Perl 5 you may have available.
 
 =cut

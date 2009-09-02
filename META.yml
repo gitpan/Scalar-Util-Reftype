@@ -1,6 +1,6 @@
 ---
 name: Scalar-Util-Reftype
-version: 0.30
+version: 0.31
 author:
   - 'Burak Gursoy <burak@cpan.org>'
 abstract: Alternate reftype() interface
@@ -13,17 +13,17 @@ build_requires:
 requires:
   Scalar::Util: 0
 configure_requires:
-  Module::Build: 0.340201
+  Module::Build: 0.35
 provides:
   Scalar::Util::Reftype:
     file: lib/Scalar/Util/Reftype.pm
-    version: 0.30
+    version: 0.31
 no_index:
   directory:
     - monolithic_version
     - builder
     - t
-generated_by: Module::Build version 0.340201
+generated_by: Module::Build version 0.35
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
