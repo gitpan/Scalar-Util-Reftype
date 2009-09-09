@@ -2,6 +2,10 @@ Revision history for Perl extension Scalar::Util::Reftype
 
 Time zone is GMT+2.
 
+0.40 Wed Sep  9 05:26:13 2009
+   => LVALUE & FORMAT support. Documented VSTRING as unsupported.
+   => OO back-end is now hidden.
+
 0.31 Thu Sep  3 01:43:48 2009
    => Distro & Pod fix.
 
